@@ -2,7 +2,6 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QueueTriggerDI.Context.Entities;
 using QueueTriggerDI.Context.Mapping;
 using QueueTriggerDI.Context.Repositories;
 using QueueTriggerDI.Context.Services;
@@ -39,11 +38,10 @@ namespace QueueTriggerDI
                         .Build()
                 );
 
-            string sectionName = BlobServiceSettings.ServiceSettings;
             builder.Services.AddOptions<BlobServiceSettings>()
                 .Configure<IConfiguration>((options, configuration) =>
                 {
-                    configuration.GetSection(sectionName).Bind(options);
+                    configuration.GetSection(BlobServiceSettings.SettingsSectionName).Bind(options);
                 });
 
             builder.Services.AddSingleton(

@@ -1,11 +1,13 @@
 using AutoMapper;
-using Azure.Data.Tables;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using QueueTriggerDI.Cosmos;
+using QueueTriggerDI.Cosmos.Repositories;
+using QueueTriggerDI.Cosmos.Services;
 using QueueTriggerDI.Queues;
 using QueueTriggerDI.Queues.Services;
 using QueueTriggerDI.Tables;
@@ -36,6 +38,10 @@ namespace QueueTriggerDI.API
             services.AddTransient(typeof(ITableEntityService<>), typeof(TableEntityService<>));
             services.AddTransient(typeof(ITableEntityRepository<>), typeof(TableEntityRepository<>));
 
+            services.AddTransient<ICosmosDatabaseService, CosmosDatabaseService>();
+            services.AddTransient(typeof(ICosmosItemService<>), typeof(CosmosItemService<>));
+            services.AddTransient(typeof(ICosmosItemRepository<>), typeof(CosmosItemRepository<>));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -46,8 +52,9 @@ namespace QueueTriggerDI.API
                 new MapperConfiguration(config => { config.AddProfile(new TableMappingProfile()); })
                 .CreateMapper());
 
-            services.Configure<TableServiceSettings>(Configuration.GetSection(TableServiceSettings.ServiceSettings));
-            services.Configure<QueueServiceSettings>(Configuration.GetSection(QueueServiceSettings.ServiceSettings));
+            services.Configure<TableServiceSettings>(Configuration.GetSection(TableServiceSettings.SettingsSectionName));
+            services.Configure<QueueServiceSettings>(Configuration.GetSection(QueueServiceSettings.SettingsSectionName));
+            services.Configure<CosmosServiceSettings>(Configuration.GetSection(CosmosServiceSettings.SettingsSectionName));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

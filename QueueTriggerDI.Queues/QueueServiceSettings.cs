@@ -2,7 +2,7 @@
 {
     public class QueueServiceSettings
     {
-        public const string ServiceSettings = "QueueServiceSettings";
+        public const string SettingsSectionName = "QueueServiceSettings";
 
         public string ConnectionString { get; set; }
 

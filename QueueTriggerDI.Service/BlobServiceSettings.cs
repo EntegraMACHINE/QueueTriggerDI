@@ -4,7 +4,7 @@ namespace QueueTriggerDI.Storage
 {
     public class BlobServiceSettings
     {
-        public const string ServiceSettings = "BlobServiceSettings";
+        public const string SettingsSectionName = "BlobServiceSettings";
 
         public string ConnectionString { get; set; }
 

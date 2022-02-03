@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QueueTriggerDI.Context\QueueTriggerDI.Context.csproj" />
+    <ProjectReference Include="..\QueueTriggerDI.Cosmos\QueueTriggerDI.Cosmos.csproj" />
     <ProjectReference Include="..\QueueTriggerDI.Queues\QueueTriggerDI.Queues.csproj" />
     <ProjectReference Include="..\QueueTriggerDI.Service\QueueTriggerDI.Storage.csproj" />
     <ProjectReference Include="..\QueueTriggerDI.Tables\QueueTriggerDI.Tables.csproj" />

@@ -4,7 +4,7 @@ namespace QueueTriggerDI.Tables
 {
     public class TableServiceSettings
     {
-        public const string ServiceSettings = "TableServiceSettings";
+        public const string SettingsSectionName = "TableServiceSettings";
 
         public string ConnectionString { get; set; }
 
