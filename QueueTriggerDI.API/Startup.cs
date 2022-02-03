@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using QueueTriggerDI.Queues;
 using QueueTriggerDI.Queues.Services;
 using QueueTriggerDI.Tables;
 using QueueTriggerDI.Tables.Mapping;
@@ -44,6 +45,9 @@ namespace QueueTriggerDI.API
             services.AddSingleton(
                 new MapperConfiguration(config => { config.AddProfile(new TableMappingProfile()); })
                 .CreateMapper());
+
+            services.Configure<TableServiceSettings>(Configuration.GetSection(TableServiceSettings.ServiceSettings));
+            services.Configure<QueueServiceSettings>(Configuration.GetSection(QueueServiceSettings.ServiceSettings));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -2,9 +2,11 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QueueTriggerDI.Context.Entities;
 using QueueTriggerDI.Context.Mapping;
 using QueueTriggerDI.Context.Repositories;
 using QueueTriggerDI.Context.Services;
+using QueueTriggerDI.Storage;
 using QueueTriggerDI.Storage.Services;
 using System.IO;
 
@@ -21,6 +23,7 @@ namespace QueueTriggerDI
 
             builder.Services.AddSingleton<IDbConnectionService, DbConnectionService>();
             builder.Services.AddTransient(typeof(IDapperRepository<>), typeof(DapperRepository<>));
+
             builder.Services.AddTransient<IBookRepository, BookRepository>();
             builder.Services.AddTransient<IBookContentRepository, BookContentRepository>();
 
@@ -35,6 +38,13 @@ namespace QueueTriggerDI
                         .AddEnvironmentVariables()
                         .Build()
                 );
+
+            string sectionName = BlobServiceSettings.ServiceSettings;
+            builder.Services.AddOptions<BlobServiceSettings>()
+                .Configure<IConfiguration>((options, configuration) =>
+                {
+                    configuration.GetSection(sectionName).Bind(options);
+                });
 
             builder.Services.AddSingleton(
                 new MapperConfiguration(config => { config.AddProfile(new MappingProfile()); })

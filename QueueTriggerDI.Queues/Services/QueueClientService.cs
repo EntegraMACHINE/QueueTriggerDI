@@ -1,26 +1,28 @@
-﻿using Azure.Storage.Queues;
-using Microsoft.Extensions.Configuration;
+﻿using Azure.Core;
+using Azure.Storage.Queues;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace QueueTriggerDI.Queues.Services
 {
     public class QueueClientService : IQueueClientService
     {
-        private readonly IConfiguration configuration;
+        private readonly QueueServiceSettings settings;
 
-        public QueueClientService(IConfiguration configuration)
+        public QueueClientService(IOptions<QueueServiceSettings> settings)
         {
-            this.configuration = configuration;
+            this.settings = settings.Value;
         }
 
         public QueueClient GetQueueClient(string queueName)
         {
-            return new QueueClient(
-                configuration.GetConnectionString("QueueStorageConnectionString"), 
-                queueName, 
-                new QueueClientOptions()
-                {
-                    MessageEncoding = QueueMessageEncoding.Base64
-                });
+            QueueClientOptions options = new QueueClientOptions();
+            options.MessageEncoding = QueueMessageEncoding.Base64;
+            options.Retry.Mode = RetryMode.Exponential;
+            options.Retry.Delay = TimeSpan.FromSeconds(settings.DelayInSeconds);
+            options.Retry.MaxRetries = settings.MaxRetry;
+
+            return new QueueClient(settings.ConnectionString, queueName, options);
         }
     }
 }

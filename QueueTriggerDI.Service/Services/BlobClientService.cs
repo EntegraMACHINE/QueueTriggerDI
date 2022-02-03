@@ -1,7 +1,9 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Core;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace QueueTriggerDI.Storage.Services
@@ -9,12 +11,12 @@ namespace QueueTriggerDI.Storage.Services
     public class BlobClientService : IBlobClientService
     {
         private readonly ILogger logger;
-        private readonly string connectionString;
+        private readonly BlobServiceSettings settings;
 
-        public BlobClientService(IConfiguration configuration, ILogger<BlobClientService> logger)
+        public BlobClientService(IOptions<BlobServiceSettings> settings, ILogger<BlobClientService> logger)
         {
             this.logger = logger;
-            connectionString = configuration.GetConnectionString("BlobStorageConnectionString");
+            this.settings = settings.Value;
         }
 
         public BlobClient GetBlobClient(BlobContainerClient blobContainerClient, string blobName)
@@ -38,7 +40,12 @@ namespace QueueTriggerDI.Storage.Services
 
         private BlobServiceClient GetBlobServiceClient()
         {
-            return new BlobServiceClient(connectionString);
+            BlobClientOptions blobClientOptions = new BlobClientOptions();
+            blobClientOptions.Retry.Mode = RetryMode.Exponential;
+            blobClientOptions.Retry.Delay = TimeSpan.FromSeconds(settings.DelayInSeconds);
+            blobClientOptions.Retry.MaxRetries = settings.MaxRetry;
+
+            return new BlobServiceClient(settings.ConnectionString, blobClientOptions);
         }
 
         private void CheckBlobContainerExist(BlobContainerClient blobContainerClient)

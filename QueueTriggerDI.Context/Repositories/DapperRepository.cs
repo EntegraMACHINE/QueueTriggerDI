@@ -10,7 +10,7 @@ namespace QueueTriggerDI.Context.Repositories
     { 
         protected readonly IDbConnectionService dbConnectionService;
 
-        protected DapperRepository(IDbConnectionService dbConnectionService)
+        public DapperRepository(IDbConnectionService dbConnectionService)
         {
             this.dbConnectionService = dbConnectionService;
         }

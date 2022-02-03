@@ -1,15 +1,18 @@
-﻿using Azure.Data.Tables;
+﻿using Azure.Core;
+using Azure.Data.Tables;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace QueueTriggerDI.Tables.Services
 {
     public class TableClientService : ITableClientService
     {
-        private readonly string connectionString;
+        private readonly TableServiceSettings settings;
 
-        public TableClientService(IConfiguration configuration)
+        public TableClientService(IOptions<TableServiceSettings> settings)
         {
-            connectionString = configuration.GetConnectionString("TableStorageConnectionString");
+            this.settings = settings.Value;
         }
 
         public TableClient GetTableClient(string tableName)
@@ -19,7 +22,12 @@ namespace QueueTriggerDI.Tables.Services
 
         private TableServiceClient GetTableServiceClient()
         {
-            return new TableServiceClient(connectionString);
+            TableClientOptions tableClientOptions = new TableClientOptions();
+            tableClientOptions.Retry.Mode = RetryMode.Exponential;
+            tableClientOptions.Retry.Delay = TimeSpan.FromSeconds(settings.DelayInSeconds);
+            tableClientOptions.Retry.MaxRetries = settings.MaxRetry;
+
+            return new TableServiceClient(settings.ConnectionString, tableClientOptions);
         }
     }
 }
