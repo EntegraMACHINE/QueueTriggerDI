@@ -24,7 +24,7 @@ namespace QueueTriggerDI.Storage.Services
             this.logger = logger;
         }
 
-        public string MakeSnapshot(BlobParameters blobParameters)
+        public string MakeSnapshot(BlobParametersDto blobParameters)
         {
             CheckBlobParameters(blobParameters);
 
@@ -35,7 +35,7 @@ namespace QueueTriggerDI.Storage.Services
             return response.Value.Snapshot;
         }
 
-        public void UploadBlob<T>(BlobParameters blobParameters, T content)
+        public void UploadBlob<T>(BlobParametersDto blobParameters, T content)
         {
             CheckBlobParameters(blobParameters);
 
@@ -50,7 +50,7 @@ namespace QueueTriggerDI.Storage.Services
             }
         }
 
-        public void StageBlock<T>(BlobParameters blobParameters, T content)
+        public void StageBlock<T>(BlobParametersDto blobParameters, T content)
         {
             CheckBlobParameters(blobParameters);
 
@@ -67,7 +67,7 @@ namespace QueueTriggerDI.Storage.Services
             }
         }
 
-        public void CommitBlocks(BlobParameters blobParameters)
+        public void CommitBlocks(BlobParametersDto blobParameters)
         {
             CheckBlobParameters(blobParameters);
 
@@ -80,7 +80,7 @@ namespace QueueTriggerDI.Storage.Services
             blockBlobClient.CommitBlockList(response.Value.UncommittedBlocks.Select(x => x.Name));
         }
 
-        public T DownloadBlob<T>(BlobParameters blobParameters)
+        public T DownloadBlob<T>(BlobParametersDto blobParameters)
         {
             CheckBlobParameters(blobParameters);
 
@@ -94,7 +94,7 @@ namespace QueueTriggerDI.Storage.Services
             return GetBlobContent<T>(response);
         }
 
-        public IList<T> DownloadBlocksBlob<T>(BlobParameters blobParameters)
+        public IList<T> DownloadBlocksBlob<T>(BlobParametersDto blobParameters)
         {
             CheckBlobParameters(blobParameters);
 
@@ -148,7 +148,7 @@ namespace QueueTriggerDI.Storage.Services
             }
         }
 
-        private void CheckBlobParameters(BlobParameters blobParameters)
+        private void CheckBlobParameters(BlobParametersDto blobParameters)
         {
             if (string.IsNullOrWhiteSpace(blobParameters.BlobName) || string.IsNullOrWhiteSpace(blobParameters.BlobContainerName))
             {

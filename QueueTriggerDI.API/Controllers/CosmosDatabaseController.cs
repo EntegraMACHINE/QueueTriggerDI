@@ -47,7 +47,7 @@ namespace QueueTriggerDI.API.Controllers
 
         [HttpPost]
         [Route("[controller]/create-container-if-not-exist")]
-        public async Task<IActionResult> CreateContainerIfNotExist([FromBody] CreateContainerModel createContainerModel)
+        public async Task<IActionResult> CreateContainerIfNotExist([FromBody] CreateContainerDto createContainerModel)
         {
             (Container, HttpStatusCode) response = await cosmosClientService.CreateContainerIfNotExist(createContainerModel);
 

@@ -26,7 +26,7 @@ namespace QueueTriggerDI.Cosmos.Services
             return GetCosmosClient().GetDatabase(databaseId);
         }
 
-        public async Task<(Container, HttpStatusCode)> CreateContainerIfNotExist(CreateContainerModel createContainerModel)
+        public async Task<(Container, HttpStatusCode)> CreateContainerIfNotExist(CreateContainerDto createContainerModel)
         {
             ContainerProperties containerProperties = new ContainerProperties();
             containerProperties.Id = createContainerModel.ContainerId;

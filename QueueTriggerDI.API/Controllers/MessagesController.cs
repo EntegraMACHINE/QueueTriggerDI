@@ -32,7 +32,7 @@ namespace QueueTriggerDI.API.Controllers
 
         [HttpPost]
         [Route("[controller]/send-download-message")]
-        public IActionResult SendDownloadMessage([FromBody] DownloadMessage message)
+        public IActionResult SendDownloadMessage([FromBody] DownloadMessageDto message)
         {
             return Ok(queueStorageService.SendMessage(downloadQueueName, JsonConvert.SerializeObject(message)));
         }

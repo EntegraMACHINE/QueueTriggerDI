@@ -1,6 +1,6 @@
-﻿namespace QueueTriggerDI.Storage.Models
+﻿namespace QueueTriggerDI.Storage.DTO
 {
-    public class BlobParameters
+    public class BlobParametersDto
     {
         public string BlobName { get; set; }
 

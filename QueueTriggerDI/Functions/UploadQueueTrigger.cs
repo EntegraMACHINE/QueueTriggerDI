@@ -23,7 +23,7 @@ namespace QueueTriggerDI.Functions
         {
             logger.LogInformation($"C# Queue trigger function processed: {message}");
 
-            UploadMessage uploadMessage = JsonConvert.DeserializeObject<UploadMessage>(message);
+            UploadMessageDto uploadMessage = JsonConvert.DeserializeObject<UploadMessageDto>(message);
 
             blobStorageService.MakeSnapshot(uploadMessage.Parameters);
         }

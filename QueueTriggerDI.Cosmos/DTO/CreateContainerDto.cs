@@ -1,6 +1,6 @@
-﻿namespace QueueTriggerDI.Cosmos.Models
+﻿namespace QueueTriggerDI.Cosmos.DTO
 {
-    public class CreateContainerModel
+    public class CreateContainerDto
     {
         public string DatabaseId { get; set; }
 

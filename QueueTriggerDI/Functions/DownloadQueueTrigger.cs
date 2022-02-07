@@ -27,7 +27,7 @@ namespace QueueTriggerDI.Functions
         {
             logger.LogInformation($"C# Queue trigger function processed: {message}");
 
-            DownloadMessage downloadMessage = JsonConvert.DeserializeObject<DownloadMessage>(message);
+            DownloadMessageDto downloadMessage = JsonConvert.DeserializeObject<DownloadMessageDto>(message);
 
             BookDto book = blobStorageService.DownloadBlob<BookDto>(downloadMessage.Parameters);
             bookService.AddBook(book);

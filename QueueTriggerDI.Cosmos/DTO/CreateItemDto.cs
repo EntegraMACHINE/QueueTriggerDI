@@ -1,8 +1,8 @@
 ﻿using QueueTriggerDI.Cosmos.Entities;
 
-namespace QueueTriggerDI.Cosmos.Models
+namespace QueueTriggerDI.Cosmos.DTO
 {
-    public class CreateItemModel<T> where T : class, ICosmosItem
+    public class CreateItemDto<T> where T : class, ICosmosItem
     {
         public string DatabaseId { get; set; }
 

@@ -1,11 +1,11 @@
 ﻿using QueueTriggerDI.Context.DTO;
 using QueueTriggerDI.Storage.Models;
 
-namespace QueueTriggerDI.Models
+namespace QueueTriggerDI.API.DTO
 {
-    public class UploadMessage
+    public class UploadMessageDto
     {
-        public BlobParameters Parameters { get; set; }
+        public BlobParametersDto Parameters { get; set; }
 
         public BookDto Book { get; set; }
     }

@@ -11,7 +11,7 @@ namespace QueueTriggerDI.Cosmos.Services
 
         Database GetDatabase(string databaseId);
 
-        Task<(Container, HttpStatusCode)> CreateContainerIfNotExist(CreateContainerModel createContainerModel);
+        Task<(Container, HttpStatusCode)> CreateContainerIfNotExist(CreateContainerDto createContainerModel);
 
         Container GetContainer(string databaseId, string containerId);
     }
