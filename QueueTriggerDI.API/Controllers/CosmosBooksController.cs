@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QueueTriggerDI.Cosmos.Entities;
-using QueueTriggerDI.Cosmos.Models;
+using QueueTriggerDI.Cosmos.DTO;
 using QueueTriggerDI.Cosmos.Services;
 using System.Threading.Tasks;
 
@@ -19,7 +19,7 @@ namespace QueueTriggerDI.API.Controllers
 
         [HttpPost]
         [Route("[controller]/add-cosmos-book")]
-        public async Task<IActionResult> AddBook([FromBody] CreateItemModel<BookItem> createItemModel)
+        public async Task<IActionResult> AddBook([FromBody] CreateItemDto<BookItem> createItemModel)
         {
             BookItem result = await cosmosItemService.AddItemAync(createItemModel);
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
-using QueueTriggerDI.Cosmos.Models;
+using QueueTriggerDI.Cosmos.DTO;
 using QueueTriggerDI.Cosmos.Services;
 using System.Net;
 using System.Threading.Tasks;

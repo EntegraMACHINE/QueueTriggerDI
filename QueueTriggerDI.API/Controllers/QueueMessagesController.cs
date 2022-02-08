@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using QueueTriggerDI.API.Models;
+using QueueTriggerDI.API.DTO;
 using QueueTriggerDI.Queues.Services;
 
 namespace QueueTriggerDI.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MessagesController : ControllerBase
+    public class QueueMessagesController : ControllerBase
     {
         private readonly IQueueStorageService queueStorageService;
 
         private readonly string downloadQueueName;
         private readonly string uploadQueueName;
 
-        public MessagesController(IQueueStorageService queueStorageService, IConfiguration configuration)
+        public QueueMessagesController(IQueueStorageService queueStorageService, IConfiguration configuration)
         {
             this.queueStorageService = queueStorageService;
 
@@ -39,7 +39,7 @@ namespace QueueTriggerDI.API.Controllers
 
         [HttpPost]
         [Route("[controller]/send-upload-message")]
-        public IActionResult SendUploadMessage([FromBody] UploadMessage message)
+        public IActionResult SendUploadMessage([FromBody] UploadMessageDto message)
         {
             return Ok(queueStorageService.SendMessage(uploadQueueName, JsonConvert.SerializeObject(message)));
         }

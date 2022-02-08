@@ -3,9 +3,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QueueTriggerDI.Context.DTO;
 using QueueTriggerDI.Context.Services;
-using QueueTriggerDI.Models;
+using QueueTriggerDI.DTO;
 using QueueTriggerDI.Storage.Services;
-using System.Collections.Generic;
 
 namespace QueueTriggerDI.Functions
 {

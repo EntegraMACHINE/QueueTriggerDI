@@ -6,11 +6,11 @@ namespace QueueTriggerDI.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class TablesController : ControllerBase
+    public class AzureTablesController : ControllerBase
     {
         private readonly ITableService tableService;
 
-        public TablesController(ITableService tableService)
+        public AzureTablesController(ITableService tableService)
         {
             this.tableService = tableService;
         }

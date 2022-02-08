@@ -9,8 +9,8 @@ using QueueTriggerDI.Storage;
 using QueueTriggerDI.Storage.Services;
 using System.IO;
 
-[assembly: FunctionsStartup(typeof(QueueTriggerDI.Startup))]
-namespace QueueTriggerDI
+[assembly: FunctionsStartup(typeof(QueueTriggerDI.Functions.Startup))]
+namespace QueueTriggerDI.Functions
 {
     public class Startup : FunctionsStartup
     {

@@ -4,7 +4,7 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using QueueTriggerDI.Storage.Models;
+using QueueTriggerDI.Storage.DTO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,9 +44,7 @@ namespace QueueTriggerDI.Storage.Services
 
             using (Stream stream = new MemoryStream())
             {
-                ContentToStream(stream, content);
-
-                blobClient.Upload(stream);
+                blobClient.Upload(ContentToStream(stream, content));
             }
         }
 
@@ -61,9 +59,7 @@ namespace QueueTriggerDI.Storage.Services
 
             using (Stream stream = new MemoryStream())
             {
-                ContentToStream(stream, content);
-
-                blockBlobClient.StageBlock(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), stream);
+                blockBlobClient.StageBlock(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), ContentToStream(stream, content));
             }
         }
 

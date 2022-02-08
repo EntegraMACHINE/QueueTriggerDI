@@ -1,7 +1,6 @@
 ﻿using Azure.Core;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -21,14 +20,16 @@ namespace QueueTriggerDI.Storage.Services
 
         public BlobClient GetBlobClient(BlobContainerClient blobContainerClient, string blobName)
         {
-            CheckBlobContainerExist(blobContainerClient);
+            if(!CheckBlobContainerExist(blobContainerClient))
+                return null;
 
             return blobContainerClient.GetBlobClient(blobName);
         }
 
         public BlockBlobClient GetBlockBlobClient(BlobContainerClient blobContainerClient, string blobName)
         {
-            CheckBlobContainerExist(blobContainerClient);
+            if (!CheckBlobContainerExist(blobContainerClient))
+                return null;
 
             return blobContainerClient.GetBlockBlobClient(blobName);
         }
@@ -48,15 +49,15 @@ namespace QueueTriggerDI.Storage.Services
             return new BlobServiceClient(settings.ConnectionString, blobClientOptions);
         }
 
-        private void CheckBlobContainerExist(BlobContainerClient blobContainerClient)
+        private bool CheckBlobContainerExist(BlobContainerClient blobContainerClient)
         {
             if (!blobContainerClient.Exists())
             {
-                string message = $"Container {blobContainerClient.Name} does not exist!";
-
-                logger.LogWarning(message);
-                throw new InvalidOperationException(message);
+                logger.LogWarning($"Container {blobContainerClient.Name} does not exist!");
+                return false;
             }
+
+            return true;
         }
     }
 }

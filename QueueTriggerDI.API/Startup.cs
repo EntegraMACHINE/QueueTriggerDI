@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using QueueTriggerDI.Context.Mapping;
+using QueueTriggerDI.Context.Repositories;
+using QueueTriggerDI.Context.Services;
 using QueueTriggerDI.Cosmos;
 using QueueTriggerDI.Cosmos.Repositories;
 using QueueTriggerDI.Cosmos.Services;
@@ -42,14 +45,28 @@ namespace QueueTriggerDI.API
             services.AddTransient(typeof(ICosmosItemService<>), typeof(CosmosItemService<>));
             services.AddTransient(typeof(ICosmosItemRepository<>), typeof(CosmosItemRepository<>));
 
+            services.AddTransient<IBookService, BookService>();
+
+            services.AddSingleton<IDbConnectionService, DbConnectionService>();
+            services.AddTransient(typeof(IDapperRepository<>), typeof(DapperRepository<>));
+
+            services.AddTransient<IBookRepository, BookRepository>();
+            services.AddTransient<IBookContentRepository, BookContentRepository>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "QueueTriggerDI.API", Version = "v1" });
             });
 
+            services.AddLogging();
+
             services.AddSingleton(
-                new MapperConfiguration(config => { config.AddProfile(new TableMappingProfile()); })
+                new MapperConfiguration(config =>
+                {
+                    config.AddProfile(new TableMappingProfile());
+                    config.AddProfile(new MappingProfile());
+                })
                 .CreateMapper());
 
             services.Configure<TableServiceSettings>(Configuration.GetSection(TableServiceSettings.SettingsSectionName));

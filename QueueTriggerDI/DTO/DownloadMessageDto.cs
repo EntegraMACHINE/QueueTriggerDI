@@ -1,4 +1,4 @@
-﻿using QueueTriggerDI.Storage.Models;
+﻿using QueueTriggerDI.Storage.DTO;
 
 namespace QueueTriggerDI.DTO
 {

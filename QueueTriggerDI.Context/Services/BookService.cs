@@ -3,7 +3,6 @@ using QueueTriggerDI.Context.DTO;
 using QueueTriggerDI.Context.Entities;
 using QueueTriggerDI.Context.Repositories;
 using System;
-using System.Collections.Generic;
 
 namespace QueueTriggerDI.Context.Services
 {
@@ -11,45 +10,109 @@ namespace QueueTriggerDI.Context.Services
     {
         private readonly IBookRepository bookRepository;
         private readonly IBookContentRepository bookContentRepository;
-        private readonly IMapper mapper;
 
-        public BookService(IBookRepository bookRepository, IBookContentRepository bookContentRepository, IMapper mapper)
+        public BookService(IBookRepository bookRepository, IBookContentRepository bookContentRepository)
         {
             this.bookRepository = bookRepository;
             this.bookContentRepository = bookContentRepository;
-            this.mapper = mapper;
         }
 
         public BookDto AddBook(BookDto bookDto)
         {
-            Book book = bookRepository.AddBook(mapper.Map<Book>(bookDto));
+            Book book = bookRepository.AddBook(
+                new Book
+                {
+                    Id = bookDto.Id,
+                    Name = bookDto.Name,
+                    Author = bookDto.Author
+                });
 
-            BookContent bookContent = mapper.Map<BookContent>(bookDto);
-            bookContent.BookId = book.Id;
-            bookContentRepository.AddBookContent(bookContent);
+            if (book == null)
+                return null;
+
+            BookContent bookContent = bookContentRepository.AddBookContent(
+                new BookContent
+                {
+                    Id = Guid.NewGuid(),
+                    BookId = book.Id,
+                    Content = bookDto.Content
+                });
+
+            return new BookDto
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Author = book.Author,
+                Content = bookContent.Content
+            };
+        }
+
+        public BookDto GetBookById(Guid id)
+        {
+            Book book = bookRepository.GetBook(id);
+
+            if (book == null)
+                return null;
+
+            BookContent bookContent = bookContentRepository.GetBookContent(id);
+
+            BookDto bookDto = new BookDto
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Author = book.Author,
+                Content = bookContent.Content
+            };
 
             return bookDto;
         }
 
-        public BookDto GetBook(Guid id)
+        public BookDto UpdateBook(Guid bookId, BookDto newBookData)
         {
-            BookDto bookDto = mapper.Map<BookDto>(bookRepository.GetBook(id));
-            return mapper.Map(bookContentRepository.GetBookContent(id), bookDto);
+            Book book = bookRepository.GetBook(bookId);
+
+            if (book == null)
+                return null;
+
+            Book updatedBook = bookRepository.UpdateBook(
+                new Book
+                {
+                    Id = book.Id,
+                    Name = newBookData.Name,
+                    Author = newBookData.Author
+                });
+
+            BookContent updatedBookContent = bookContentRepository.UpdateBookContent(
+                new BookContent
+                {
+                    BookId = bookId,
+                    Content = newBookData.Content
+                });
+
+            return new BookDto
+            {
+                Id = updatedBook.Id,
+                Name = updatedBook.Name,
+                Author = updatedBook.Author,
+                Content = updatedBookContent.Content
+            };
         }
 
-        public IList<BookDto> GetBooks(string author)
+        public bool DeleteBook(Guid id)
         {
-            throw new NotImplementedException();
-        }
+            Book book = bookRepository.GetBook(id);
 
-        public BookDto UpdateBook(BookDto bookDto)
-        {
-            throw new NotImplementedException();
-        }
+            if (book == null)
+                return false;
 
-        public void DeleteBook(Guid id)
-        {
-            throw new NotImplementedException();
+            BookContent bookContent = bookContentRepository.GetBookContent(id);
+
+            bookRepository.DeleteBook(book.Id);
+
+            if (bookContent != null)
+                bookContentRepository.DeleteBookContent(book.Id);
+
+            return true;
         }
     }
 }

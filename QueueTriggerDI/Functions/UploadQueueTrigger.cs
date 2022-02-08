@@ -2,7 +2,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QueueTriggerDI.Context.DTO;
-using QueueTriggerDI.Models;
+using QueueTriggerDI.DTO;
 using QueueTriggerDI.Storage.Services;
 
 namespace QueueTriggerDI.Functions

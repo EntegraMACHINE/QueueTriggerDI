@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
-using QueueTriggerDI.Cosmos.Models;
+using QueueTriggerDI.Cosmos.DTO;
 using System.Net;
 using System.Threading.Tasks;
 

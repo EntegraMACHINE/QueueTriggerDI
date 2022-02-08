@@ -6,14 +6,12 @@ namespace QueueTriggerDI.Context.Services
 {
     public interface IBookService
     {
-        BookDto GetBook(Guid id);
-
-        IList<BookDto> GetBooks(string author);
+        BookDto GetBookById(Guid id);
 
         BookDto AddBook(BookDto book);
 
-        BookDto UpdateBook(BookDto book);
+        BookDto UpdateBook(Guid bookId, BookDto book);
 
-        void DeleteBook(Guid id);
+        bool DeleteBook(Guid id);
     }
 }

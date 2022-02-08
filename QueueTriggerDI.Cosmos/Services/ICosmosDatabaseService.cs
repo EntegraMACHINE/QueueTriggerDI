@@ -1,5 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
-using QueueTriggerDI.Cosmos.Models;
+using QueueTriggerDI.Cosmos.DTO;
 using System.Net;
 using System.Threading.Tasks;
 

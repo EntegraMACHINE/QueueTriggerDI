@@ -10,12 +10,12 @@ namespace QueueTriggerDI.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class BooksController : ControllerBase
+    public class AzureTablesBooksController : ControllerBase
     {
         private readonly ITableEntityService<BookEntity> tableEntityService;
         private readonly IMapper mapper;
 
-        public BooksController(ITableEntityService<BookEntity> tableEntityService, IMapper mapper)
+        public AzureTablesBooksController(ITableEntityService<BookEntity> tableEntityService, IMapper mapper)
         {
             this.tableEntityService = tableEntityService;
             this.mapper = mapper;

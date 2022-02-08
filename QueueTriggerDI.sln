@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI", "QueueTriggerDI\QueueTriggerDI.csproj", "{F99A481F-1EF0-46E7-88E1-12EBB451391D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI.Funcrions", "QueueTriggerDI\QueueTriggerDI.Funcrions.csproj", "{F99A481F-1EF0-46E7-88E1-12EBB451391D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI.Storage", "QueueTriggerDI.Service\QueueTriggerDI.Storage.csproj", "{30F8B5B4-479E-4AD4-8550-D935049EBC87}"
 EndProject
@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI.Queues", "Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI.Tables", "QueueTriggerDI.Tables\QueueTriggerDI.Tables.csproj", "{9A0BA353-2B7C-459A-919C-46B9581C4991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueTriggerDI.Cosmos", "QueueTriggerDI.Cosmos\QueueTriggerDI.Cosmos.csproj", "{015CAA3D-2AE6-476C-9556-010040CDDD86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI.Cosmos", "QueueTriggerDI.Cosmos\QueueTriggerDI.Cosmos.csproj", "{015CAA3D-2AE6-476C-9556-010040CDDD86}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueTriggerDI.Tests", "QueueTriggerDI.Tests\QueueTriggerDI.Tests.csproj", "{6AEC50CB-3252-446E-8FC1-4A5965296BD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{015CAA3D-2AE6-476C-9556-010040CDDD86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{015CAA3D-2AE6-476C-9556-010040CDDD86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{015CAA3D-2AE6-476C-9556-010040CDDD86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AEC50CB-3252-446E-8FC1-4A5965296BD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AEC50CB-3252-446E-8FC1-4A5965296BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AEC50CB-3252-446E-8FC1-4A5965296BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AEC50CB-3252-446E-8FC1-4A5965296BD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

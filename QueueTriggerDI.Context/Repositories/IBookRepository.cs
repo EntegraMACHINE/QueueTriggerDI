@@ -12,6 +12,6 @@ namespace QueueTriggerDI.Context.Repositories
 
         Book UpdateBook(Book book);
 
-        Guid DeleteBook(Guid id);
+        bool DeleteBook(Guid id);
     }
 }

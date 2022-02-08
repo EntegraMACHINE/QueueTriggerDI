@@ -47,14 +47,14 @@ namespace QueueTriggerDI.Context.Repositories
             return dapperRepository.QuerySingle(UPDATE_PROCEDURE_NAME, parameters);
         }
 
-        public Guid DeleteBook(Guid id)
+        public bool DeleteBook(Guid id)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Id", id, DbType.Guid);
 
             dapperRepository.Execute(DELETE_PROCEDURE_NAME, parameters);
 
-            return id;
+            return true;
         }
     }
 }
