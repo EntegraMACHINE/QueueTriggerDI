@@ -3,6 +3,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 
 namespace QueueTriggerDI.Storage.Services
@@ -20,6 +21,8 @@ namespace QueueTriggerDI.Storage.Services
 
         public BlobClient GetBlobClient(BlobContainerClient blobContainerClient, string blobName)
         {
+            Verify.NotEmpty(nameof(blobName), blobName);
+
             if(!CheckBlobContainerExist(blobContainerClient))
                 return null;
 
@@ -28,6 +31,8 @@ namespace QueueTriggerDI.Storage.Services
 
         public BlockBlobClient GetBlockBlobClient(BlobContainerClient blobContainerClient, string blobName)
         {
+            Verify.NotEmpty(nameof(blobName), blobName);
+
             if (!CheckBlobContainerExist(blobContainerClient))
                 return null;
 
@@ -36,6 +41,8 @@ namespace QueueTriggerDI.Storage.Services
 
         public BlobContainerClient GetBlobContainerClient(string containerName)
         {
+            Verify.NotEmpty(nameof(containerName), containerName);
+
             return GetBlobServiceClient().GetBlobContainerClient(containerName);
         }
 
@@ -51,7 +58,7 @@ namespace QueueTriggerDI.Storage.Services
 
         private bool CheckBlobContainerExist(BlobContainerClient blobContainerClient)
         {
-            if (!blobContainerClient.Exists())
+            if (!blobContainerClient.Exists().Value)
             {
                 logger.LogWarning($"Container {blobContainerClient.Name} does not exist!");
                 return false;

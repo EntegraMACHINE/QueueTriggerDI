@@ -5,13 +5,11 @@ namespace QueueTriggerDI.Storage.Services
 {
     public interface IBlobStorageService
     {
-        string MakeSnapshot(BlobParametersDto blobParameters);
+        bool UploadBlob<T>(BlobParametersDto blobParameters, T content);
 
-        void UploadBlob<T>(BlobParametersDto blobParameters, T content);
+        bool StageBlock<T>(BlobParametersDto blobParameters, T content);
 
-        void StageBlock<T>(BlobParametersDto blobParameters, T content);
-
-        void CommitBlocks(BlobParametersDto blobParameters);
+        bool CommitBlocks(BlobParametersDto blobParameters);
 
         T DownloadBlob<T>(BlobParametersDto blobParameters);
 

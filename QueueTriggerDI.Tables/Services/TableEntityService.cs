@@ -1,5 +1,6 @@
 ﻿using Azure.Data.Tables;
 using QueueTriggerDI.Tables.Repositories;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 using System.Collections.Generic;
 
@@ -16,14 +17,16 @@ namespace QueueTriggerDI.Tables.Services
 
         public void AddEntity(string tableName, T entity)
         {
-            CheckTableName(tableName);
+            Verify.NotEmpty(nameof(tableName), tableName);
+            Verify.NotNullOrDefault(nameof(entity), entity);
 
             entityRepository.AddEntity(tableName, entity);
         }
 
         public T GetEntity(string tableName, Guid id)
         {
-            CheckTableName(tableName);
+            Verify.NotEmpty(nameof(tableName), tableName);
+            Verify.NotEmpty(nameof(id), id);
 
             (string, string) keys = GuidToSeparatedString(id);
 
@@ -32,28 +35,26 @@ namespace QueueTriggerDI.Tables.Services
 
         public IList<T> GetEntities(string tableName)
         {
-            CheckTableName(tableName);
+            Verify.NotEmpty(nameof(tableName), tableName);
 
             return entityRepository.GetEntities(tableName);
         }
 
         public void DeleteEntity(string tableName, Guid id)
         {
-            CheckTableName(tableName);  
+            Verify.NotEmpty(nameof(tableName), tableName);
+            Verify.NotEmpty(nameof(id), id);
 
             (string, string) keys = GuidToSeparatedString(id);
 
             entityRepository.DeleteEntity(tableName, keys.Item1, keys.Item2);
         }
 
-        private void CheckTableName(string tableName)
-        {
-            if (string.IsNullOrWhiteSpace(tableName))
-                throw new Exception("Table name is empty!");
-        }
 
         private (string, string) GuidToSeparatedString(Guid id)
         {
+            Verify.NotEmpty(nameof(id), id);
+
             string stringId = id.ToString();
             return (stringId[..(stringId.Length / 2)], stringId[(stringId.Length / 2)..]);
         }

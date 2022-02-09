@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Azure.Storage.Queues;
 using Microsoft.Extensions.Options;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 
 namespace QueueTriggerDI.Queues.Services
@@ -16,6 +17,8 @@ namespace QueueTriggerDI.Queues.Services
 
         public QueueClient GetQueueClient(string queueName)
         {
+            Verify.NotEmpty(nameof(queueName), queueName);
+
             QueueClientOptions options = new QueueClientOptions();
             options.MessageEncoding = QueueMessageEncoding.Base64;
             options.Retry.Mode = RetryMode.Exponential;

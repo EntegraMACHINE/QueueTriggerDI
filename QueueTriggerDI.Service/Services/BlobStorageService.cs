@@ -5,6 +5,7 @@ using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QueueTriggerDI.Storage.DTO;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,66 +25,82 @@ namespace QueueTriggerDI.Storage.Services
             this.logger = logger;
         }
 
-        public string MakeSnapshot(BlobParametersDto blobParameters)
+        public bool UploadBlob<T>(BlobParametersDto blobParameters, T content)
         {
-            CheckBlobParameters(blobParameters);
+            Verify.NotEmpty(nameof(blobParameters.BlobName), blobParameters.BlobName);
+            Verify.NotEmpty(nameof(blobParameters.BlobContainerName), blobParameters.BlobContainerName);
+            Verify.NotNullOrDefault(nameof(content), content);
 
             BlobContainerClient blobContainerClient = blobClientService.GetBlobContainerClient(blobParameters.BlobContainerName);
-            BlobClient blobClient = blobClientService.GetBlobClient(blobContainerClient, blobParameters.BlobName);
-            
-            Response<BlobSnapshotInfo> response = blobClient.CreateSnapshot();
-            return response.Value.Snapshot;
-        }
+            if(blobContainerClient == null)
+                return false;
 
-        public void UploadBlob<T>(BlobParametersDto blobParameters, T content)
-        {
-            CheckBlobParameters(blobParameters);
-
-            BlobContainerClient blobContainerClient = blobClientService.GetBlobContainerClient(blobParameters.BlobContainerName);
             BlobClient blobClient = blobClientService.GetBlobClient(blobContainerClient, blobParameters.BlobName);
+            if (!CheckBlobExist(blobClient))
+                return false;
 
             using (Stream stream = new MemoryStream())
             {
                 blobClient.Upload(ContentToStream(stream, content));
+                return true;
             }
         }
 
-        public void StageBlock<T>(BlobParametersDto blobParameters, T content)
+        public bool StageBlock<T>(BlobParametersDto blobParameters, T content)
         {
-            CheckBlobParameters(blobParameters);
+            Verify.NotEmpty(nameof(blobParameters.BlobName), blobParameters.BlobName);
+            Verify.NotEmpty(nameof(blobParameters.BlobContainerName), blobParameters.BlobContainerName);
+            Verify.NotNullOrDefault(nameof(content), content);
 
             BlobContainerClient blobContainerClient = blobClientService.GetBlobContainerClient(blobParameters.BlobContainerName);
+            if (blobContainerClient == null)
+                return false;
+
             BlockBlobClient blockBlobClient = blobClientService.GetBlockBlobClient(blobContainerClient, blobParameters.BlobName);
 
-            CheckBlobExist(blockBlobClient);
+            if (!CheckBlobExist(blockBlobClient))
+                return false;
 
             using (Stream stream = new MemoryStream())
             {
                 blockBlobClient.StageBlock(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), ContentToStream(stream, content));
+                return true;
             }
         }
 
-        public void CommitBlocks(BlobParametersDto blobParameters)
+        public bool CommitBlocks(BlobParametersDto blobParameters)
         {
-            CheckBlobParameters(blobParameters);
+            Verify.NotEmpty(nameof(blobParameters.BlobName), blobParameters.BlobName);
+            Verify.NotEmpty(nameof(blobParameters.BlobContainerName), blobParameters.BlobContainerName);
 
             BlobContainerClient blobContainerClient = blobClientService.GetBlobContainerClient(blobParameters.BlobContainerName);
+            if (blobContainerClient == null)
+                return false;
+
             BlockBlobClient blockBlobClient = blobClientService.GetBlockBlobClient(blobContainerClient, blobParameters.BlobName);
 
-            CheckBlobExist(blockBlobClient);
+            if(!CheckBlobExist(blockBlobClient))
+                return false;
 
             Response<BlockList> response = blockBlobClient.GetBlockList();
             blockBlobClient.CommitBlockList(response.Value.UncommittedBlocks.Select(x => x.Name));
+
+            return true;
         }
 
         public T DownloadBlob<T>(BlobParametersDto blobParameters)
         {
-            CheckBlobParameters(blobParameters);
+            Verify.NotEmpty(nameof(blobParameters.BlobName), blobParameters.BlobName);
+            Verify.NotEmpty(nameof(blobParameters.BlobContainerName), blobParameters.BlobContainerName);
 
             BlobContainerClient blobContainerClient = blobClientService.GetBlobContainerClient(blobParameters.BlobContainerName);
+            if (blobContainerClient == null)
+                return default;
+
             BlobClient blobClient = blobClientService.GetBlobClient(blobContainerClient, blobParameters.BlobName);
-            
-            CheckBlobExist(blobClient);
+
+            if(!CheckBlobExist(blobClient))
+                return default;
 
             Response<BlobDownloadInfo> response = blobClient.Download();
 
@@ -92,12 +109,17 @@ namespace QueueTriggerDI.Storage.Services
 
         public IList<T> DownloadBlocksBlob<T>(BlobParametersDto blobParameters)
         {
-            CheckBlobParameters(blobParameters);
+            Verify.NotEmpty(nameof(blobParameters.BlobName), blobParameters.BlobName);
+            Verify.NotEmpty(nameof(blobParameters.BlobContainerName), blobParameters.BlobContainerName);
 
             BlobContainerClient blobContainerClient = blobClientService.GetBlobContainerClient(blobParameters.BlobContainerName);
+            if (blobContainerClient == null)
+                return null;
+
             BlockBlobClient blockBlobClient = blobClientService.GetBlockBlobClient(blobContainerClient, blobParameters.BlobName);
 
-            CheckBlobExist(blockBlobClient);
+            if(!CheckBlobExist(blockBlobClient))
+                return null;
 
             Response<BlockList> response = blockBlobClient.GetBlockList();
 
@@ -134,24 +156,18 @@ namespace QueueTriggerDI.Storage.Services
             return JsonConvert.DeserializeObject<T>(Encoding.ASCII.GetString(result));
         }
 
-        private void CheckBlobExist(BlobBaseClient blobClient)
+        private bool CheckBlobExist(BlobBaseClient blobClient)
         {
-            if (!blobClient.Exists())
-            {
-                string message = $"Blob {blobClient.Name} does not exist!";
-                logger.LogWarning(message);
-                throw new InvalidOperationException(message);
-            }
-        }
+            if(blobClient == null)
+                return false;
 
-        private void CheckBlobParameters(BlobParametersDto blobParameters)
-        {
-            if (string.IsNullOrWhiteSpace(blobParameters.BlobName) || string.IsNullOrWhiteSpace(blobParameters.BlobContainerName))
+            if (!blobClient.Exists().Value)
             {
-                string message = "Blob parameters are not valid!";
-                logger.LogWarning(message);
-                throw new InvalidOperationException(message);
+                logger.LogWarning($"Blob {blobClient.Name} does not exist!");
+                return false;
             }
+
+            return true;
         }
     }
 }

@@ -2,6 +2,7 @@
 using QueueTriggerDI.Context.DTO;
 using QueueTriggerDI.Context.Entities;
 using QueueTriggerDI.Context.Repositories;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 
 namespace QueueTriggerDI.Context.Services
@@ -19,6 +20,8 @@ namespace QueueTriggerDI.Context.Services
 
         public BookDto AddBook(BookDto bookDto)
         {
+            Verify.NotNullOrDefault(nameof(bookDto), bookDto);
+
             Book book = bookRepository.AddBook(
                 new Book
                 {
@@ -49,6 +52,8 @@ namespace QueueTriggerDI.Context.Services
 
         public BookDto GetBookById(Guid id)
         {
+            Verify.NotEmpty(nameof(id), id);
+
             Book book = bookRepository.GetBook(id);
 
             if (book == null)
@@ -67,9 +72,12 @@ namespace QueueTriggerDI.Context.Services
             return bookDto;
         }
 
-        public BookDto UpdateBook(Guid bookId, BookDto newBookData)
+        public BookDto UpdateBook(Guid id, BookDto newBookData)
         {
-            Book book = bookRepository.GetBook(bookId);
+            Verify.NotEmpty(nameof(id), id);
+            Verify.NotNullOrDefault(nameof(newBookData), newBookData);
+
+            Book book = bookRepository.GetBook(id);
 
             if (book == null)
                 return null;
@@ -85,7 +93,7 @@ namespace QueueTriggerDI.Context.Services
             BookContent updatedBookContent = bookContentRepository.UpdateBookContent(
                 new BookContent
                 {
-                    BookId = bookId,
+                    BookId = id,
                     Content = newBookData.Content
                 });
 
@@ -100,6 +108,8 @@ namespace QueueTriggerDI.Context.Services
 
         public bool DeleteBook(Guid id)
         {
+            Verify.NotEmpty(nameof(id), id);
+
             Book book = bookRepository.GetBook(id);
 
             if (book == null)

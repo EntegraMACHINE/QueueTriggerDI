@@ -6,7 +6,7 @@ using QueueTriggerDI.Context.Services;
 using System;
 using Xunit;
 
-namespace QueueTriggerDI.Tests
+namespace QueueTriggerDI.Tests.ContextTests
 {
     public class BookServiceTests
     {

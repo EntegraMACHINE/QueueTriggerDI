@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
 using Azure.Data.Tables;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 
 namespace QueueTriggerDI.Tables.Services
@@ -17,6 +17,8 @@ namespace QueueTriggerDI.Tables.Services
 
         public TableClient GetTableClient(string tableName)
         {
+            Verify.NotEmpty(nameof(tableName), tableName);
+
             return GetTableServiceClient().GetTableClient(tableName);
         }
 

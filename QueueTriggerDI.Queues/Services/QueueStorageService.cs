@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
+using QueueTriggerDI.Utils.Checkers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace QueueTriggerDI.Queues.Services
 
         public IList<QueueMessage> GetQueueMessages(string queueName)
         {
+            Verify.NotEmpty(nameof(queueName), queueName);
+
             QueueClient queueClient = queueClientService.GetQueueClient(queueName);
             CheckQueueClientExist(queueClient);
 
@@ -27,23 +30,21 @@ namespace QueueTriggerDI.Queues.Services
 
         public string SendMessage(string queueName, string message)
         {
-            try
-            {
-                QueueClient queueClient = queueClientService.GetQueueClient(queueName);
-                CheckQueueClientExist(queueClient);
+            Verify.NotEmpty(nameof(queueName), queueName);
+            Verify.NotEmpty(nameof(message), message);
 
-                queueClient.SendMessage(message);
+            QueueClient queueClient = queueClientService.GetQueueClient(queueName);
+            CheckQueueClientExist(queueClient);
 
-                return "Message was successfully added!";
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
+            queueClient.SendMessage(message);
+
+            return "Message was successfully added!";
         }
 
         public void ClearQueue(string queueName)
         {
+            Verify.NotEmpty(nameof(queueName), queueName);
+
             QueueClient queueClient = queueClientService.GetQueueClient(queueName);
             CheckQueueClientExist(queueClient);
 
